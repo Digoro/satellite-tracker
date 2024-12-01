@@ -13,20 +13,35 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
     fullscreenButton: true, // 전체화면 버튼 표시
 });
 
-// viewer.camera.setView({
-//     destination: Cesium.Cartesian3.fromDegrees(34.5, 128.9, 1500),
-// });
+// 지상국 안테나 위치
+const groundStationPosition = Cesium.Cartesian3.fromDegrees(127.0, 37.5, 100); // 위도, 경도, 높이 (서울 기준)
 
-document.getElementById('btn').addEventListener('click', ()=> {
-    viewer.camera.setView({
-        destination: Cesium.Cartesian3.fromDegrees(126.9256608, 37.4824289, 2000),
-        orientation: {
-            heading: Cesium.Math.toRadians(90), // 방향
-            pitch: Cesium.Math.toRadians(-30), // 경사
-            roll: 0 // 회전
-        }
-    });
-})
+// 안테나의 3D 모델 추가
+const groundStation = viewer.entities.add({
+  name: 'Ground Station Antenna',
+  position: groundStationPosition,
+  model: {
+    uri: './antenna.glb', // 안테나 3D 모델 파일 경로
+    scale: 1.0,
+    minimumPixelSize: 52,
+  },
+});
+
+// 수신 범위 표시 (구 형태)
+const antennaCoverage = viewer.entities.add({
+    name: 'Antenna Coverage',
+    position: groundStationPosition,
+    ellipsoid: {
+      radii: new Cesium.Cartesian3(500000.0, 500000.0, 500000.0), // 수신 범위 반지름 (500km)
+      material: Cesium.Color.BLUE.withAlpha(0.2), // 반투명 파란색
+      outline: true, // 테두리 표시
+      outlineColor: Cesium.Color.BLUE,
+    },
+});
+
+viewer.camera.setView({
+    destination: Cesium.Cartesian3.fromDegrees(127.0, 37.5, 10000000)
+});
 
 const socket = new WebSocket('ws://localhost:3000');
 

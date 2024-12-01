@@ -9,7 +9,7 @@ const wss = new WebSocket.Server({ server });
 const satelliteData = {
     id: 'sat-001',
     timestamp: Date.now(),
-    position: { lat: 34.5, lon: 128.9, alt: 400 }
+    position: { lat: 37.5, lon: 127.0, alt: 300 }
 };
 
 wss.on('connection', (ws) => {
@@ -17,11 +17,11 @@ wss.on('connection', (ws) => {
     const interval = setInterval(() => {
         satelliteData.position = {
             lat: satelliteData.position.lat,
-            lon:satelliteData.position.lon + 0.3,
-            alt: satelliteData.position.alt + 0.8
+            lon:satelliteData.position.lon + 20,
+            alt: satelliteData.position.alt + 0.05
         }
         ws.send(JSON.stringify(satelliteData));
-    }, 100);
+    }, 1000);
 
     ws.on('close', () => {
         clearInterval(interval);
